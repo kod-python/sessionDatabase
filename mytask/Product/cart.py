@@ -50,9 +50,12 @@ class Cart:
     
     def get_item_count(self):
         return sum(item['quantity'] for item in self.cart.values())
-
     
-
+    
+    def get_product_count(self):
+        return len(self.cart)
+   
+    
     def __iter__(self):
         product_ids = self.cart.keys()
         products = Product.objects.filter(id__in=product_ids)

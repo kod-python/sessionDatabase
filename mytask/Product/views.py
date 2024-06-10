@@ -11,8 +11,10 @@ def index(request):
  
     products = Product.objects.all()
     cart = Cart(request)
-    item_count = cart.get_item_count()
-    return render(request, 'index.html', {'products': products, 'item_count':item_count})
+    
+    product_count = cart.get_product_count()
+ 
+    return render(request, 'index.html', {'products': products, 'product_count':product_count})
 
 
 
@@ -43,8 +45,8 @@ def cart_add(request, id):
 
 def cart_detail(request):
     cart = Cart(request)
-    
-    return render(request, 'cart_detail.html', {'cart': cart})
+    item_count = cart.get_item_count()
+    return render(request, 'cart_detail.html', {'cart': cart, 'item_count':item_count})
 
     
 
