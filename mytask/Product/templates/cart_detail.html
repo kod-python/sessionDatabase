@@ -86,8 +86,13 @@
 </table>
 
 
+<form action="{% url 'checkout' %}" method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-secondary">Confirm Order</button>
+</form>
 
  <a href="{% url 'index' %}">continue shopping</a>
+
 
 
   <script src="{% static 'script/delete.js' %}"></script>
