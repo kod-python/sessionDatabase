@@ -56,33 +56,67 @@ def checkout(request):
     if request.method == 'POST':
         form = CheckoutForm(request.POST)
         if form.is_valid():
-            shipping_address = form.cleaned_data['shipping_address']
-            billing_address = form.cleaned_data['billing_address']
+            first_name = form.cleaned_data['first_name']
+            last_name = form.cleaned_data['last_name']
+            company_name = form.cleaned_data['company_name']
+            address = form.cleaned_data['address']
+            house_number_street_name = form.cleaned_data['house_number_street_name']
+            town_city = form.cleaned_data['town_city']
+            country = form.cleaned_data['country']
+            postcode_zip = form.cleaned_data['postcode_zip']
+            mobile = form.cleaned_data['mobile']
+            email_address = form.cleaned_data['email_address']
+            create_account = form.cleaned_data['create_account']
+            ship_to_different_address = form.cleaned_data['ship_to_different_address']
             payment_method = form.cleaned_data['payment_method']
 
-          
             cart = get_object_or_404(Carts, user=request.user)
             cart_items = OrderItem.objects.filter(cart=cart)
 
-        
-            total_price = sum(item.product.price * item.quantity for item in cart_items)
+          
+            total_price = 0
+            for item in cart_items:
+                item.sub_total = item.product.price * item.quantity
+                total_price += item.sub_total
 
+          
             order = Order.objects.create(
                 user=request.user,
+                first_name=first_name,
+                last_name=last_name,
+                company_name=company_name,
+                address=address,
+                house_number_street_name=house_number_street_name,
+                town_city=town_city,
+                country=country,
+                postcode_zip=postcode_zip,
+                mobile=mobile,
+                email_address=email_address,
                 total_price=total_price,
-                shipping_address=shipping_address,
-                billing_address=billing_address,
-                payment_method=payment_method
+                payment_method=','.join(payment_method)  
             )
 
-         
+          
+            if ship_to_different_address:
+              
+                pass
+
+          
             cart_items.delete()
 
             return redirect('order_confirmation', order_id=order.id)
     else:
         form = CheckoutForm()
+    
 
-    return render(request, 'checkout.html', {'form': form})
+    cart = get_object_or_404(Carts, user=request.user)
+    cart_items = OrderItem.objects.filter(cart=cart)
+    
+   
+    for item in cart_items:
+        item.sub_total = item.product.price * item.quantity
+
+    return render(request, 'checkout.html', {'form': form, 'cart':cart})
 
 
 
@@ -93,6 +127,251 @@ def checkout(request):
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def checkout(request):
+#     if request.method == 'POST':
+#         form = CheckoutForm(request.POST)
+#         if form.is_valid():
+#             first_name = form.cleaned_data['first_name']
+#             last_name = form.cleaned_data['last_name']
+#             company_name = form.cleaned_data['company_name']
+#             address = form.cleaned_data['address']
+#             house_number_street_name = form.cleaned_data['house_number_street_name']
+#             town_city = form.cleaned_data['town_city']
+#             country = form.cleaned_data['country']
+#             postcode_zip = form.cleaned_data['postcode_zip']
+#             mobile = form.cleaned_data['mobile']
+#             email_address = form.cleaned_data['email_address']
+#             create_account = form.cleaned_data['create_account']
+#             ship_to_different_address = form.cleaned_data['ship_to_different_address']
+#             payment_method = form.cleaned_data['payment_method']
+
+#             # Retrieve the cart and cart items
+#             cart = get_object_or_404(Carts, user=request.user)
+#             cart_items = OrderItem.objects.filter(cart=cart)
+
+           
+#             total_price = 0
+#             for item in cart_items:
+#                 item.sub_total = item.product.price * item.quantity
+#                 total_price += item.sub_total
+
+#             order = Order.objects.create(
+#                 user=request.user,
+#                 first_name=first_name,
+#                 last_name=last_name,
+#                 company_name=company_name,
+#                 address=address,
+#                 house_number_street_name=house_number_street_name,
+#                 town_city=town_city,
+#                 country=country,
+#                 postcode_zip=postcode_zip,
+#                 mobile=mobile,
+#                 email_address=email_address,
+#                 total_price=total_price,
+#                 payment_method=','.join(payment_method)  
+#             )
+
+            
+#             if ship_to_different_address:
+               
+#                 pass
+
+           
+#             cart_items.delete()
+
+#             return redirect('order_confirmation', order_id=order.id)
+#     else:
+#         form = CheckoutForm()
+#         cart = get_object_or_404(Carts, user=request.user)
+#         cart_items = OrderItem.objects.filter(cart=cart)
+        
+       
+#         for item in cart_items:
+#             item.sub_total = item.product.price * item.quantity
+
+#     return render(request, 'checkout.html', {'form': form, cart_items, 'total_price':total_price})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def checkout(request):
+#     if request.method == 'POST':
+#         form = CheckoutForm(request.POST)
+#         if form.is_valid():
+#             first_name = form.cleaned_data['first_name']
+#             last_name = form.cleaned_data['last_name']
+#             company_name = form.cleaned_data['company_name']
+#             address = form.cleaned_data['address']
+#             house_number_street_name = form.cleaned_data['house_number_street_name']
+#             town_city = form.cleaned_data['town_city']
+#             country = form.cleaned_data['country']
+#             postcode_zip = form.cleaned_data['postcode_zip']
+#             mobile = form.cleaned_data['mobile']
+#             email_address = form.cleaned_data['email_address']
+#             create_account = form.cleaned_data['create_account']
+#             ship_to_different_address = form.cleaned_data['ship_to_different_address']
+#             payment_method = form.cleaned_data['payment_method']
+
+#             # Here you can handle the `create_account` logic if needed
+#             # For example, creating a new user account
+
+#             # Retrieve the cart and cart items
+#             cart = get_object_or_404(Carts, user=request.user)
+#             cart_items = OrderItem.objects.filter(cart=cart)
+
+#             # Calculate the total price of the cart
+#             total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+#             # Create an order
+#             order = Order.objects.create(
+#                 user=request.user,
+#                 first_name=first_name,
+#                 last_name=last_name,
+#                 company_name=company_name,
+#                 address=address,
+#                 house_number_street_name=house_number_street_name,
+#                 town_city=town_city,
+#                 country=country,
+#                 postcode_zip=postcode_zip,
+#                 mobile=mobile,
+#                 create_account=create_account,
+#                 email_address=email_address,
+#                 total_price=total_price,
+#                 payment_method=','.join(payment_method)  # Store selected payment methods as a comma-separated string
+#             )
+
+#             # If shipping to a different address, handle that logic here
+#             if ship_to_different_address:
+#                 # Add logic for handling different shipping address if needed
+#                 pass
+
+#             # Clear the cart items
+#             cart_items.delete()
+
+#             return redirect('order_confirmation', order_id=order.id)
+#     else:
+#         form = CheckoutForm()
+
+#     return render(request, 'checkout.html', {'form': form})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# def checkout(request):
+#     if request.method == 'POST':
+#         form = CheckoutForm(request.POST)
+#         if form.is_valid():
+#             first_name = form.cleaned_data['first_name']
+#             last_name = form.cleaned_data['last_name']
+#             email = form.cleaned_data['email']
+#             mobile = form.cleaned_data['mobile']
+#             shipping = form.cleaned_data['shipping']
+
+#             cart = get_object_or_404(Carts, user=request.user)
+#             cart_items = OrderItem.objects.filter(cart=cart)
+
+        
+#             total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+#             order = Order.objects.create(
+#                 user=request.user,
+#                 total_price=total_price,
+#                 first_name=first_name,
+#                 last_name=last_name,
+#                 email=email,
+#                 mobile=mobile,
+#                 shipping=shipping
+#             )
+
+         
+#             cart_items.delete()
+
+#             return redirect('order_confirmation', order_id=order.id)
+#     else:
+#         form = CheckoutForm()
+
+#     return render(request, 'checkout.html', {'form': form})
+
+
+
+
+
+
+
+
+# def checkout(request):
+#     if request.method == 'POST':
+#         form = CheckoutForm(request.POST)
+#         if form.is_valid():
+#             shipping_address = form.cleaned_data['shipping_address']
+#             billing_address = form.cleaned_data['billing_address']
+#             payment_method = form.cleaned_data['payment_method']
+
+          
+#             cart = get_object_or_404(Carts, user=request.user)
+#             cart_items = OrderItem.objects.filter(cart=cart)
+
+        
+#             total_price = sum(item.product.price * item.quantity for item in cart_items)
+
+#             order = Order.objects.create(
+#                 user=request.user,
+#                 total_price=total_price,
+#                 shipping_address=shipping_address,
+#                 billing_address=billing_address,
+#                 payment_method=payment_method
+#             )
+
+         
+#             cart_items.delete()
+
+#             return redirect('order_confirmation', order_id=order.id)
+#     else:
+#         form = CheckoutForm()
+
+#     return render(request, 'checkout.html', {'form': form})
 
 
 
