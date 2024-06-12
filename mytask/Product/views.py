@@ -3,9 +3,9 @@ from django.http import JsonResponse
 from .cart import Cart
 from .models import Product
 from django.contrib import messages
-# from .models import  Order, OrderItem, Cart
+from .models import  Order, OrderItem, Carts
 
-from .models import Order,CartItem,Carts
+# from .models import Order,CartItem,Carts
 from .forms import CheckoutForm
 
 
@@ -43,17 +43,9 @@ def display(request):
 
 def order_confirmation(request, order_id):
     order = get_object_or_404(Order, id=order_id)
-    return render(request, 'order_confirmation.html', {'order': order})
-
-
-
-# def order_confirmation(request, order_id):
-#     order = get_object_or_404(Order, id=order_id)
-#     return render(request, 'order_confirmation.html', {'order': order})
-
-
-
-
+    cart = Cart(request)
+    
+    return render(request, 'order_confirmation.html', {'order': order, 'cart':cart})
 
 
 
@@ -68,17 +60,13 @@ def checkout(request):
             billing_address = form.cleaned_data['billing_address']
             payment_method = form.cleaned_data['payment_method']
 
-            # Ensure cart_items is a list or queryset of cart items
-            cart, created = Cart.objects.get_or_create(user=request.user)
-            cart_items = CartItem.objects.filter(cart=cart)
+          
+            cart = get_object_or_404(Carts, user=request.user)
+            cart_items = OrderItem.objects.filter(cart=cart)
 
-            if not cart_items.exists():
-                return render(request, 'checkout.html', {'form': form, 'error': 'Your cart is empty.'})
-
-            # Calculate the total price
+        
             total_price = sum(item.product.price * item.quantity for item in cart_items)
 
-            # Create the order
             order = Order.objects.create(
                 user=request.user,
                 total_price=total_price,
@@ -87,7 +75,7 @@ def checkout(request):
                 payment_method=payment_method
             )
 
-            # Optionally, clear the cart items after creating the order
+         
             cart_items.delete()
 
             return redirect('order_confirmation', order_id=order.id)
@@ -97,86 +85,6 @@ def checkout(request):
     return render(request, 'checkout.html', {'form': form})
 
 
-
-# def checkout(request):
-#     if request.method == 'POST':
-#         form = CheckoutForm(request.POST)
-#         if form.is_valid():
-#             shipping_address = form.cleaned_data['shipping_address']
-#             billing_address = form.cleaned_data['billing_address']
-#             payment_method = form.cleaned_data['payment_method']
-
-#             # Ensure cart_items is a list or queryset of cart items
-#             cart = get_object_or_404(Carts, user=request.user)
-#             cart_items = CartItem.objects.filter(cart=cart)
-
-#             # Calculate the total price
-#             total_price = sum(item.product.price * item.quantity for item in cart_items)
-
-#             # Create the order
-#             order = Order.objects.create(
-#                 user=request.user,
-#                 total_price=total_price,
-#                 shipping_address=shipping_address,
-#                 billing_address=billing_address,
-#                 payment_method=payment_method
-#             )
-
-#             # Optionally, clear the cart items after creating the order
-#             cart_items.delete()
-
-#             return redirect('order_confirmation', order_id=order.id)
-#     else:
-#         form = CheckoutForm()
-
-#     return render(request, 'checkout.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
-
-# def checkout(request):
-#     cart_items = Carts(request)
-#     if not cart_items:
-#         return redirect('cart_detail')  
-
-#     if request.method == 'POST':
-#         form = CheckoutForm(request.POST)
-#         if form.is_valid():
-#             shipping_address = form.cleaned_data['shipping_address']
-#             billing_address = form.cleaned_data['billing_address']
-#             payment_method = form.cleaned_data['payment_method']
-          
-#             total_price = sum(item.product.price * item.quantity for item in cart_items)
-#             order = Order.objects.create(
-#                 user=request.user,
-#                 total_price=total_price,
-#                 shipping_address=shipping_address,
-#                 billing_address=billing_address,
-#                 payment_method=payment_method
-#             )
-
-#             for item in cart_items:
-#                 OrderItem.objects.create(
-#                     order=order,
-#                     product=item.product,
-#                     quantity=item.quantity,
-#                     price=item.product.price
-#                 )
-
-#             cart_items.delete() 
-
-#             return redirect( 'checkout_success', order=order)
-#     else:
-#         form = CheckoutForm()
-
-#     return render(request, 'checkout.html', {'form': form, 'cart_items': cart_items})
 
 
 

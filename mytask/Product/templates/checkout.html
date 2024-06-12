@@ -8,10 +8,11 @@
     {% if error %}
         <p style="color: red;">{{ error }}</p>
     {% endif %}
-    <form method="POST" action="{%  url 'order_confirmation' order_id  %}">
+    <form method="POST" action="{% url 'checkout' %}">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Place Order</button>
     </form>
 </body>
 </html>
+
