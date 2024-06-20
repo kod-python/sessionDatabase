@@ -35,8 +35,8 @@ class Cart:
             self.save()
 
     def clear(self):
-        self.session[settings.CART_SESSION_ID] = {}
-        self.session.modified = True
+       del self.session[settings.CART_SESSION_ID] 
+       self.session.modified = True
 
     def update_quantity(self, product_id, quantity):
         product_id = str(product_id)

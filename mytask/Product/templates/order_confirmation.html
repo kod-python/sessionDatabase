@@ -9,6 +9,7 @@
     <h1>Order Confirmation</h1>
     <p>Thank you for your order!</p>
     <p>Order ID: {{ order.id }}</p> 
+    <p>Username: {{order.username}}</p>
     <p>first_name: {{ order.first_name }}</p>
     <p>last_name: {{ order.last_name }}</p>
     <p>company: {{ order.company_name }}</p>
@@ -19,6 +20,7 @@
     <p>mobile  : {{ order.mobile   }}</p>
     <p>email_address : {{ order.email_address  }}</p>
     <p> payment_method  : {{ order.payment_method   }}</p>
+    <p>Sub Total: {{order.get_total_cost}}</p>
 
     {% for item in cart %}
  
