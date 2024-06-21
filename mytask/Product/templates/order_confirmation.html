@@ -4,10 +4,73 @@
 <head>
     <title>Order Confirmation</title>
 </head>
-<body>
 
+<style>
+
+table, th, td{
+    border: 1px solid black;
+    margin: 20px;
+    padding: 10px;
+    font-size: 1.2rem
+};
+
+
+
+
+
+
+</style>
+
+<body>
+    
+    <h1 style="text-align: center; padding-bottom:80px">Order Confirmation</h1>
+<table>
+<tr>
+    <th>Order ID</th>
+    <th>Username</th>
+    <th>First_name</th>
+    <th>last_name</th>
+    <th>Company</th>
+    <th>Address</th>
+    <th>House Number</th>
+    <th>Town_City</th>
+    <th>Country</th>
+    <th>Mobile</th>
+    <th>Email_Address</th>
+    <th>Payment_Method</th>
+    <th>Sub Total</th>
+</tr>
+
+<tr> 
+
+<td><p style="text-align: center;">{{ order.id }}</p> </td>
+
+<td><p style="text-align: center;">{{ order.first_name }}</p></td>
+<td><p style="text-align: center;">{{ order.last_name }}</p></td>
+<td> <p style="text-align: center;">{{order.username}}</p></td>
+<td><p style="text-align: center;">{{ order.company_name }}</p></td>
+<td> <p style="text-align: center;">{{ order.address }}</p></td>
+<td><p style="text-align: center;">{{ order.house_number_street_name }}</p></td>
+<td> <p style="text-align: center;">{{ order.town_city  }}</p></td>
+<td><p style="text-align: center;">{{ order.country  }}</p></td>
+<td><p style="text-align: center;">{{ order.mobile   }}</p></td>
+<td><p style="text-align: center;">{{ order.email_address  }}</p></td>
+
+<td> <p style="text-align: center;">{{ order.payment_method   }}</p></td>
+<td><p style="text-align: center;">{{order.get_total_cost}}</p></td>
+
+</tr>
+
+
+
+</table>
+
+
+<!-- 
     <h1>Order Confirmation</h1>
+
     <p>Thank you for your order!</p>
+
     <p>Order ID: {{ order.id }}</p> 
     <p>Username: {{order.username}}</p>
     <p>first_name: {{ order.first_name }}</p>
@@ -20,7 +83,7 @@
     <p>mobile  : {{ order.mobile   }}</p>
     <p>email_address : {{ order.email_address  }}</p>
     <p> payment_method  : {{ order.payment_method   }}</p>
-    <p>Sub Total: {{order.get_total_cost}}</p>
+    <p>Sub Total: {{order.get_total_cost}}</p> -->
 
     {% for item in cart %}
  
@@ -29,8 +92,12 @@
 {% endfor %}
 
 
+<button class="btn border-secondary">
 
-    <a href="{% url 'index' %}">continue shopping </a>
+    <a href="{% url 'index' %} " style="text-decoration: none;">continue shopping </a>
+
+</button>
+   
 </body>
 </html>
 

@@ -24,8 +24,8 @@ class CheckoutForm(forms.ModelForm):
     create_account = forms.BooleanField(required=False, label="Create an account")
     class Meta:
         model = Order
-        fields = ['username',
-            'first_name', 'last_name', 'company_name', 'address', 'house_number_street_name',
+        fields = [
+            'first_name', 'last_name', 'username', 'company_name', 'address', 'house_number_street_name',
             'town_city', 'country', 'postcode_zip', 'mobile', 'email_address', 'payment_method',
             'total_price'
             

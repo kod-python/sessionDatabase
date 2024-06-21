@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lgin Page</title>
+</head>
+<body>
+
+ <style>
+
+        h5{
+            color:red
+        }
+    
+    
+        a{
+            text-decoration: none;
+        }
+    </style>
+    
+    {% for message in messages %}
+    <h5>{{message}}</h5>
+    
+    {% endfor %}
+    
+    <form action="login" method="POST">
+         {% csrf_token %}
+        <p>username</p>
+        <input type="text" name="username" required>
+        
+        <p>password</p>
+    
+        <input type="password" name="password" required> <br>
+    
+        <input type = "submit"> <form>if you dont have an acount please  <a href="signup">Sign-up</a>
+
+    </form>
+
+
+
+    
+</body>
+</html>

@@ -1,14 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.http import JsonResponse
+from django.contrib.auth.models import User, auth
 from .cart import Cart
 from .models import Product
 from django.contrib import messages
 from .models import  Order, OrderItem
 from django.core.mail import send_mail
 from django.contrib.auth.models import User
-
-
-
 # from .models import Order,CartItem,Carts
 from .forms import CheckoutForm
 
@@ -67,32 +65,39 @@ def checkout(request):
         if form.is_valid():
             order = form.save()
             
-            
-       
-            if form.cleaned_data['create_account']:
-                username = form.cleaned_data['username']
-                email = form.cleaned_data['email_address']
+          
+            if form.cleaned_data.get('create_account'):
+                username = form.cleaned_data.get('username')
+                email = form.cleaned_data.get('email_address')
                 password = User.objects.make_random_password()
                 
-                # Create the user account
-                user = User.objects.create(
-                    username=username,      
-                    email=email, 
-                    password=password,
-                    first_name=form.cleaned_data['first_name'],
-                    last_name=form.cleaned_data['last_name']
-                )
-
-                # Send email with account details
-                # send_mail(
-                #     'Your Account Details',
-                #     f'Your account has been created. Your password is: {password}',
-                #     'from@example.com',  # Replace with your from email
-                #     [email],
-                #     fail_silently=False,
-                # )
-                
-                # print(send_mail)
+                try:
+                    
+                    user = User.objects.create_user(
+                        username=username,      
+                        email=email, 
+                        password=password,
+                        first_name=form.cleaned_data.get('first_name'),
+                        last_name=form.cleaned_data.get('last_name')
+                    )
+                    user.save()
+                    
+                    print(user)
+                    
+                    send_mail(
+                        'Your Account Details',
+                        f'Hello {user.first_name},\n\nYour account has been created. Your username is: {username} and your password is: {password}\n\nPlease change your password after logging in for the first time.\n\nThank you!',
+                        'krist_table@yahoo.com', 
+                        [email],
+                        fail_silently=False,
+                    )
+                    
+                    print(send_mail)
+                     
+                except Exception as e:
+                  
+                    print(f"Error creating user or sending email: {e}")
+   
         
             
           
@@ -103,11 +108,7 @@ def checkout(request):
                     product = item['product'],
                     price=item['price'],
                     quantity=item['quantity'],
-                    total_price=item['total_price']
-                    
-                    
-                   
-                    
+                    total_price=item['total_price']              
                    
              )
      
@@ -117,7 +118,9 @@ def checkout(request):
         
             return redirect('order_confirmation', order_id=order.id, )
     else:
+        
         form = CheckoutForm()
+        
     return render(request, 'checkout.html', {'form':form, 'cart':cart})
 
 
@@ -137,6 +140,9 @@ def checkout(request):
 
 
 
+
+
+
 # def checkout(request):
 #     cart = Cart(request)
 #     if request.method == 'POST':
@@ -144,40 +150,59 @@ def checkout(request):
 #         if form.is_valid():
 #             order = form.save()
             
+            
+#     #    FOR USER CREATION AND DONT HAVE A USER AUTHENTICATION YET 
+    
+#             if form.cleaned_data['create_account']:
+#                 username = form.cleaned_data['username']
+#                 email = form.cleaned_data['email_address']
+#                 password = User.objects.make_random_password()
+            
+#                 user = User.objects.create_user(
+#                     username=username,      
+#                     email=email, 
+#                     password=password,
+#                     first_name=form.cleaned_data['first_name'],
+#                     last_name=form.cleaned_data['last_name']
+#                 )
+#                 user.save()   
+                   
+#                 #   send_welcome_email(user)
+#                 #   assign_default_permissions(user)
+
+#                 # Send email with account details
+#                 send_mail(
+#                     'Your Account Details',
+#                     f'Your account has been created. Your password is: {password}',
+#                     'from@example.com',  # Replace with your from email
+#                     [email],
+#                     fail_silently=False,
+#                 )
+                
+#                 print(send_mail)
+        
+            
           
 #             for item in cart:
 #                 OrderItem.objects.create(
 #                     order=order,
+                   
 #                     product = item['product'],
 #                     price=item['price'],
 #                     quantity=item['quantity'],
-#                     total_price=item['total_price']
-                    
-                    
-                   
-                    
+#                     total_price=item['total_price']              
                    
 #              )
      
             
 #             cart.clear()      
-            
-            
-            
-            
-            
-            
-            
-            
-            
-               
-            
-
-            
+                   
         
-#             return redirect('order_confirmation', order_id=order.id)
+#             return redirect('order_confirmation', order_id=order.id, )
 #     else:
+        
 #         form = CheckoutForm()
+        
 #     return render(request, 'checkout.html', {'form':form, 'cart':cart})
 
 
@@ -185,39 +210,7 @@ def checkout(request):
 
 
 
-# def checkout(request):
-#     cart = Cart(request)
-#     if request.method == 'POST':
-#         form = CheckoutForm(request.POST)
-#         if form.is_valid():
-            
-#             order = form.save()
-            
-#             for item in cart:
-#                 OrderItem.objects.create(
-#                     order=order,
-#                     product = item['product'],
-#                     price=item['price'],
-#                     quantity=item['quantity'],
-                   
-#                 )
-     
-            
-#             cart.clear()
-
-#             return redirect('order_confirmation', order_id=order.id)
-#     else:
-#         form = CheckoutForm()
-    
-
-
-
-#     return render(request, 'checkout.html', {'form': form, 'cart':cart})
-
-
-
-
-
+        
 
 def cart_add(request, id):
     product = get_object_or_404(Product, id=id)
@@ -280,3 +273,66 @@ def clear_cart(request):
 
 
 
+
+
+# Pages Site
+
+
+def login(request):
+    
+    
+    
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        
+        
+        user = auth.authenticate(username=username, password=password)
+        
+        if user is not None:
+            auth.login(request, user)
+            
+            return redirect('/')
+        else:
+            messages.info(request, 'credentials are incorrect')
+            return redirect('login')
+    else:       
+    
+     return render(request, 'login.html')
+
+
+
+def signup(request):
+    
+    if request.method == 'POST':
+        username = request.POST['username']
+        
+        password = request.POST['password']
+        password2 = request.POST['password2']
+        
+        
+        if password == password2:
+            # if User.objects.filter(email=email).exists():
+            #     messages.info(request, 'email already exists')
+            #     return redirect('register')
+            
+            if User.objects.filter(username=username).exists():
+                messages.info(request, 'username already exists')
+                return redirect('register')
+            
+            else:
+                User.objects.create_user(username=username, password=password)
+                messages.success(request, 'Registration successful. Please login.')
+                # User.save()
+                return redirect('login')
+        else:
+            messages.error(request, 'passowrd not matched')
+     
+            return redirect('register')
+        
+    else:    
+    
+    
+    
+    
+     return render(request, 'signup.html')

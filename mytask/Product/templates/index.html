@@ -18,6 +18,18 @@
 </style>
 
 <body>
+
+
+    {% if user.is_authenticated %}
+    <a href="login"><button type="submit" class="btn border-secondary">Logout</button></a>
+     
+    {% else %}
+    <a href="signup"><button type="submit" class="btn border-secondary">Login or signup</button></a>
+    {% endif %}
+  </div>
+
+
+
     <h1>Product List</h1>  
      
    
